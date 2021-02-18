@@ -1,0 +1,74 @@
+version: "3.3"
+
+networks:
+  backend:
+
+services:
+
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    command:
+      - --log.level=INFO
+      - --api.insecure=true # Run the Treafik dashboard insecurely
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.traefik.address=:9080 # Traefik dashboard
+      - --entrypoints.auth.address=:8081 # auth entrypoint
+      - --entrypoints.rest.address=:8082 # rest entrypoint
+      - --entrypoints.graphql.address=:8080 # graphql entrypoint
+    ports:
+      - 9080:9080 # Expose Traefik dashboard to outside of Traefik container
+      - 8081:8081 # Expose auth entrypoint to outside of Traefik container
+      - 8082:8082 # Expose rest entrypoint to outside of Traefik container
+      - 8080:8080 # Expose graphql entrypoint to outside of Traefik container
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - backend
+
+  stargate:
+    image: stargateio/stargate-3_11:v1.0.8
+    environment:
+      - JAVA_OPTS="-Xmx2G"
+      - CLUSTER_NAME=stargate
+      - CLUSTER_VERSION=3.11
+      - SEED=docker-compose-stargate-traefik_cassandra_1
+      - DATACENTER_NAME=dc1
+      - RACK_NAME=rack1
+    expose:
+      - 8081 # auth port
+      - 8082 # rest port
+      - 8080 # graphql port
+    labels:
+      - traefik.enable=true
+      # Auth endpoint
+      - traefik.http.routers.stargate-auth.rule=Host(`stargate.localhost`) && PathPrefix(`/`)
+      - traefik.http.routers.stargate-auth.service=stargate-auth
+      - traefik.http.routers.stargate-auth.entrypoints=auth # Listen to external auth port (entrypoint)
+      - traefik.http.services.stargate-auth.loadbalancer.server.port=8081 # Loadbalance to internal auth port for authorization
+      # REST endpoint
+      - traefik.http.routers.stargate-rest.rule=Host(`stargate.localhost`) && PathPrefix(`/`)
+      - traefik.http.routers.stargate-rest.service=stargate-rest
+      - traefik.http.routers.stargate-rest.entrypoints=rest # Listen to external rest port (entrypoint)
+      - traefik.http.services.stargate-rest.loadbalancer.server.port=8082 # Loadbalance to internal rest port for authorization
+      # GraphQL endpoint
+      - traefik.http.routers.stargate-graphql.rule=Host(`stargate.localhost`) && PathPrefix(`/`)
+      - traefik.http.routers.stargate-graphql.service=stargate-graphql
+      - traefik.http.routers.stargate-graphql.entrypoints=graphql # Listen to external graphql port (entrypoint)
+      - traefik.http.services.stargate-graphql.loadbalancer.server.port=8082 # Loadbalance to internal graphql port for authorization
+    networks:
+      - backend
+
+  cassandra:
+    image: cassandra:3.11
+    environment:
+      - HEAP_NEWSIZE=2G
+      - MAX_HEAP_SIZE=4G
+      - CASSANDRA_SEEDS=docker-compose-stargate-traefik_cassandra_1
+      - CASSANDRA_CLUSTER_NAME=stargate
+      - CASSANDRA_DC=dc1
+      - CASSANDRA_RACK=rack1
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+    networks:
+      - backend
