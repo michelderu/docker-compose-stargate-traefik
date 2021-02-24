@@ -70,6 +70,7 @@ This is also shown through the token ring cluster as follows:
 - To double check, you can compare the IP adresses with the Stargate containers using `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' docker-compose-stargate-traefik_stargate_<n>`
 
 ## Test performance using JMeter
+Download JMeter from https://jmeter.apache.org/download_jmeter.cgi and unpack in the current directory.  
 Run the test in CLI mode:
 ```sh
 ./apache-jmeter-5.4.1/bin/jmeter -n -t ingest.jmx -l ingest.csv -e -o ./results
