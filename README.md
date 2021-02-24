@@ -8,7 +8,7 @@ Storage (Cassandra) and Stargate (Compute) can be separately scaled up and down.
 ## Scripted startup
 There are two scripts provided to startup the cluster.
 - `start-c1s1t1.sh` will start the cluster with 1 node of Cassandra, 1 node of Stargate and 1 node of Traefik
-- `start-c3s3t1.sh` will start the cluster with 3 nodes of Cassandra, 3 nodes of Stargate and 1 node of Traefik
+- `start-c3s2t1.sh` will start the cluster with 3 nodes of Cassandra, 2 nodes of Stargate and 1 node of Traefik
 
 Cassandra is configured with a maximum heap size of 4 GB. Stargate with a heapsize of 2 GB but will mostly use 1 GB.
 
@@ -68,3 +68,14 @@ This is also shown through the token ring cluster as follows:
 - Cassandra nodes are shown through `nodetool status` as nodes running in the dc/rack. They should al be `UN` (Up and Normal)
 - Stargate nodes connect themselves to the token ring also but have a specialization to not store data. They can be shown through `nodetool describecluster`. The new nodes compared to the previous command will be the stargate nodes.
 - To double check, you can compare the IP adresses with the Stargate containers using `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' docker-compose-stargate-traefik_stargate_<n>`
+
+## Test performance using JMeter
+Run the test in CLI mode:
+```sh
+./apache-jmeter-5.4.1/bin/jmeter -n -t ingest.jmx -l ingest.csv -e -o ./results
+```
+
+## Run cqlsh
+```sh
+docker exec -it docker-compose-stargate-traefik_cassandra_1 cqlsh
+```

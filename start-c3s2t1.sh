@@ -1,5 +1,5 @@
 clear
-echo "Starting 3 Cassandra, 3 Stargate and 1 Traefik container(s)"
+echo "Starting 3 Cassandra, 2 Stargate and 1 Traefik container(s)"
 
 # Startup Cassandra and Traefik
 docker-compose up -d cassandra traefik
@@ -38,7 +38,7 @@ docker-compose up -d stargate
 until docker logs docker-compose-stargate-traefik_stargate_1 2>/dev/null | grep -q "Finished starting bundles";
 do
     sleep 2
-    echo "Waiting for Stargate (1/3) to startup..."
+    echo "Waiting for Stargate (1/2) to startup..."
 done
 
 # Scale Stargate to 2 nodes
@@ -48,17 +48,7 @@ docker-compose up -d --scale stargate=2 stargate
 until docker logs docker-compose-stargate-traefik_stargate_2 2>/dev/null | grep -q "Finished starting bundles";
 do
     sleep 2
-    echo "Waiting for Stargate (2/3) to startup..."
-done
-
-# Scale Stargate to 3 nodes
-docker-compose up -d --scale stargate=3 stargate
-
-# Wait until Stargate is ready
-until docker logs docker-compose-stargate-traefik_stargate_3 2>/dev/null | grep -q "Finished starting bundles";
-do
-    sleep 2
-    echo "Waiting for Stargate (3/3) to startup..."
+    echo "Waiting for Stargate (2/2) to startup..."
 done
 
 # Show container performance
