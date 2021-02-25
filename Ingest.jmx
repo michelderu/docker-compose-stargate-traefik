@@ -199,7 +199,7 @@
 	&quot;idnr&quot;: ${__Random(0,999999)},&#xd;
 	&quot;name&quot;: &quot;bla bla bla&quot;,&#xd;
 	&quot;mainnumber&quot;: ${__Random(0000,999999)},&#xd;
-	&quot;housenr&quot;: ${__Random(0,200)},&#xd;
+	&quot;housenr&quot;: ${__Random(0,17000)},&#xd;
 	&quot;addition&quot;: &quot;&quot;,&#xd;
 	&quot;place&quot;: &quot;AMsterdam&quot;,&#xd;
 	&quot;postal&quot;: &quot;1111AB&quot;,&#xd;
@@ -301,10 +301,6 @@
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="5 second delay" enabled="true">
-        <stringProp name="ConstantTimer.delay">2000</stringProp>
-      </ConstantTimer>
-      <hashTree/>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Query" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
@@ -319,6 +315,10 @@
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
       </ThreadGroup>
       <hashTree>
+        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="5 second delay" enabled="true">
+          <stringProp name="ConstantTimer.delay">2000</stringProp>
+        </ConstantTimer>
+        <hashTree/>
         <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
           <collectionProp name="HeaderManager.headers">
             <elementProp name="" elementType="Header">
