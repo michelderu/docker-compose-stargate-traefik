@@ -3,4 +3,4 @@
 /series
 jmeter.log
 ingest.csv
-/results
+/results*
