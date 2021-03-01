@@ -5,6 +5,19 @@ Stargate is a developer friendly gateway to Cassandra that offers REST, Document
 
 Storage (Cassandra) and Stargate (Compute) can be separately scaled up and down. Traefik is used to load balance any number Stargate instances.
 
+## Traefik host name
+Traefik will listen to the hostname `stargate.localhost` for loadbalancing Stargate requests. In order for this to work, you might need to extend your `/etc/hosts` file as follows:
+```
+##
+# Host Database
+#
+# localhost is used to configure the loopback interface
+# when the system is booting.  Do not change this entry.
+##
+127.0.0.1	localhost
+127.0.0.1	stargate.localhost
+```
+
 ## Scripted startup
 There are two scripts provided to startup the cluster.
 - `start-c1s1t1.sh` will start the cluster with 1 node of Cassandra, 1 node of Stargate and 1 node of Traefik
