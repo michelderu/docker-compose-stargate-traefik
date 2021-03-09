@@ -86,7 +86,8 @@ This is also shown through the token ring cluster as follows:
 Download JMeter from https://jmeter.apache.org/download_jmeter.cgi and unpack in the current directory.  
 Run the test in CLI mode:
 ```sh
-./apache-jmeter-5.4.1/bin/jmeter -n -t ingest.jmx -l ingest.csv -e -o ./results
+./apache-jmeter-5.4.1/bin/jmeter -n -t ingest.jmx -l results.csv -e -o ./results
+./apache-jmeter-5.4.1/bin/jmeter -n -t ingest-serverless.jmx -l results-serverless.csv -e -o ./results-serverless
 ```
 
 ## Run cqlsh
