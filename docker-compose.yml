@@ -28,7 +28,7 @@ services:
       - backend
 
   stargate:
-    image: stargateio/stargate-3_11:v1.0.11
+    image: stargateio/stargate-3_11:v1.0.20
     environment:
       - JAVA_OPTS="-Xmx2G"
       - CLUSTER_NAME=stargate
